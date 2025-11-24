@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Toktokder & FBdownder - GTID Tools</title>
+  <meta name="description" content="Download video TikTok & Facebook. Demo edukasi oleh GTID.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>GTID Download Lab</h1>
+      <p>Toolkit eksperimen download video. Demo edukasi, bukan bisnis downloader serius 😄</p>
+    </header>
+
+    <main class="tool-grid">
+      <!-- TOKTOKDER (TikTok) -->
+      <section class="tool-card" id="tiktok-tool">
+        <h2>Toktokder</h2>
+        <p class="tool-subtitle">
+          Tempel link TikTok, klik download, beres. <strong>GRATIS TANPA WATERMARK.</strong>
+        </p>
+
+        <form id="tiktok-form">
+          <label for="tiktok-url">Link video TikTok</label>
+          <input
+            id="tiktok-url"
+            type="url"
+            placeholder="https://www.tiktok.com/@user/video/123..."
+            required
+          />
+          <button type="submit" id="tiktok-btn">Ambil Video TikTok</button>
+        </form>
+
+        <div id="tiktok-status" class="status"></div>
+
+        <div id="tiktok-result" class="result hidden">
+          <h3>Video TikTok siap di-download</h3>
+          <video id="tiktok-preview" controls></video>
+          <a id="tiktok-download" href="#" download>Download Video TikTok</a>
+        </div>
+      </section>
+
+      <!-- FBDOWNDER (Facebook) -->
+      <section class="tool-card" id="facebook-tool">
+        <h2>FBdownder</h2>
+        <p class="tool-subtitle">
+          Tempel link video / Reels Facebook (public). Masih beta, backend akan kita sambungkan belakangan.
+        </p>
+
+        <form id="facebook-form">
+          <label for="facebook-url">Link video Facebook</label>
+          <input
+            id="facebook-url"
+            type="url"
+            placeholder="https://www.facebook.com/watch/?v=123..."
+            required
+          />
+          <button type="submit" id="facebook-btn">Ambil Video Facebook</button>
+        </form>
+
+        <div id="facebook-status" class="status"></div>
+
+        <div id="facebook-result" class="result hidden">
+          <h3>Video Facebook siap di-download</h3>
+          <video id="facebook-preview" controls></video>
+          <a id="facebook-download" href="#" download>Download Video Facebook</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        Contoh demo edukasi. Dibuat oleh GTID. Gunakan dengan bijak & ikuti Terms of Service
+        TikTok & Facebook.
+      </p>
+    </footer>
+  </div>
+
+  <script src="/script.js"></script>
+</body>
+</html>
