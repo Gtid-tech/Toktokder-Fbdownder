@@ -1,6 +1,8 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ success: false, message: "Method not allowed" });
+    return res
+      .status(405)
+      .json({ success: false, message: "Method not allowed" });
   }
 
   const { url } = req.body || {};
@@ -13,31 +15,51 @@ export default async function handler(req, res) {
   }
 
   try {
-    // ==========================================
-    //  TEMP: BACKEND FACEBOOK MASIH STUB
-    //  Di sini nanti lu sambungkan ke provider Facebook pilihan lu
-    //
-    //  Contoh pola umum kalau pakai provider:
-    //
-    //  const apiUrl = "https://provider-facebook.com/api?url=" + encodeURIComponent(url);
-    //  const response = await fetch(apiUrl, { headers: { ... } });
-    //  const json = await response.json();
-    //  const downloadUrl = json.data.hd || json.data.sd;
-    //
-    //  return res.status(200).json({ success: true, downloadUrl });
-    //
-    // ==========================================
+    // Provider: Facebook Video Downloader API (hosted di fdown.isuru.eu.org)
+    const apiUrl = "https://fdown.isuru.eu.org/download";
 
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        url,
+        quality: "best", // bisa diganti "720p", "1080p", dll kalau mau spesifik
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Gagal menghubungi provider Facebook.");
+    }
+
+    const json = await response.json();
+
+    // Format sukses menurut docs:
+    // {
+    //   "status": "success",
+    //   "download_url": "https://....mp4",
+    //   ...
+    // }
+    if (json.status !== "success" || !json.download_url) {
+      throw new Error(
+        json.message || "Provider tidak mengembalikan link video yang valid."
+      );
+    }
+
+    const downloadUrl = json.download_url;
+
+    return res.status(200).json({
+      success: true,
+      downloadUrl,
+    });
+  } catch (err) {
+    console.error("FB provider error:", err);
     return res.status(500).json({
       success: false,
       message:
-        "FBdownder masih beta. Backend Facebook belum dihubungkan ke provider mana pun.",
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      success: false,
-      message: "Server error FBdownder, coba lagi nanti.",
+        err.message ||
+        "Server error FBdownder, atau provider lagi bermasalah. Coba lagi nanti.",
     });
   }
 }
