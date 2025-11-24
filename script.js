@@ -1,3 +1,10 @@
+// Deteksi sederhana: ini device mobile atau bukan
+function isMobile() {
+  return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(
+    navigator.userAgent
+  );
+}
+
 // Helper umum untuk TikTok & Facebook
 function setupDownloader(options) {
   const {
@@ -27,6 +34,7 @@ function setupDownloader(options) {
     const url = input.value.trim();
     if (!url) return;
 
+    // Reset tampilan
     resultEl.classList.add("hidden");
     statusEl.textContent = `Lagi ngambil video ${type}...`;
     button.disabled = true;
@@ -52,11 +60,37 @@ function setupDownloader(options) {
 
       const videoUrl = data.downloadUrl;
 
+      if (!videoUrl || typeof videoUrl !== "string") {
+        throw new Error("Server tidak mengembalikan link video yang valid.");
+      }
+
+      // ==== BEHAVIOR DOWNLOAD ====
+      // Desktop → auto-download
+      // Mobile → user tap tombol "Download Video"
+      if (!isMobile()) {
+        try {
+          const a = document.createElement("a");
+          a.href = videoUrl;
+          a.download =
+            type.toLowerCase() === "tiktok"
+              ? "tiktok-video.mp4"
+              : "facebook-video.mp4";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        } catch (e) {
+          console.warn("Auto-download gagal, fallback ke tombol saja:", e);
+        }
+      }
+
+      // Tampilkan preview & tombol download (desktop & mobile)
       videoEl.src = videoUrl;
       downloadLink.href = videoUrl;
 
       resultEl.classList.remove("hidden");
-      statusEl.textContent = "";
+      statusEl.textContent = isMobile()
+        ? "Kalau belum ke-save, tap tombol Download Video di bawah. Kalau kebuka di tab baru, pakai menu Save/Download di browser."
+        : "";
     } catch (err) {
       console.error(err);
       statusEl.textContent = err.message || "Terjadi error.";
